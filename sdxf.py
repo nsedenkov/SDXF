@@ -474,17 +474,21 @@ class Layer(_Call):
 class LineType(_Call):
     """Custom linetype"""
     def __init__(self, name='continuous', description='Solid line',
-            elements=[], flag=64):
+            elements=[], ptnlen=0, flag=64):
         # TODO: Implement lineType elements
         self.name = name
         self.description = description
         self.elements = copy.copy(elements)
+        self.ptnlen = ptnlen # Total pattern length - code 40
         self.flag = flag
 
     def __str__(self):
-        return '0\nLTYPE\n2\n%s\n70\n%s\n3\n%s\n72\n65\n73\n%s\n40\n0.0' % (
+        elmstr = ''
+        for i in xrange(0,len(self.elements)):
+            elmstr += '\n49\n%s' % (str(self.elements[i]))
+        return '0\nLTYPE\n2\n%s\n70\n%s\n3\n%s\n72\n65\n73\n%s\n40\n%s%s' % (
                 self.name.upper(), self.flag, self.description,
-                len(self.elements))
+                len(self.elements), self.ptnlen, elmstr)
 
 
 class Style(_Call):
